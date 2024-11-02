@@ -1,0 +1,20 @@
+{
+  "name": "fomulario",
+  "version": "1.0.0",
+  "description": "Formulario",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/natrdguerra/Fomulario.git"
+  },
+  "author": "Natália Guerra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/natrdguerra/Fomulario/issues"
+  },
+  "homepage": "https://github.com/natrdguerra/Fomulario#readme"
+}
