@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/natrdguerra/Fomulario/issues"
   },
-  "homepage": "https://github.com/natrdguerra/Fomulario#readme"
+  "homepage": "https://github.com/natrdguerra/Fomulario#readme",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
 }
