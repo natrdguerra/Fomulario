@@ -1,89 +1,192 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+import express from 'express';
 
 const app = express();
+app.use(express.urlencoded({ extended: true }));
+
 const porta = 3000;
+const host = 'localhost';
 
-// Middleware para processar dados do formulário
-app.use(bodyParser.urlencoded({ extended: true }));
+var listaClientes = [];
 
-// Rota para exibir o formulário
-app.get('/', (req, res) => {
+function cadastrarClienteView(req, res) {
     res.send(`
         <!DOCTYPE html>
         <html lang="pt-br">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Formulário</title>
-            <style>
-                /* Adicione aqui estilos CSS opcionais para o formulário */
-                body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; }
-                .b { font-weight: bold; }
-                .A { width: 100%; padding: 8px; margin-bottom: 10px; }
-            </style>
+            <title>Cadastro de Cliente</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         </head>
         <body>
-            <h1>Cadastro</h1>
-            <form action="/submit" method="POST">
-                <label for="nome" class="b">Nome:</label><br>
-                <input name="nome" class="A" type="text" placeholder="Informe o Nome" required><br>
-
-                <label for="cpf" class="b">CPF:</label><br>
-                <input name="cpf" class="A" type="text" placeholder="ex: 123.456.789-00" required><br>
-
-                <label for="nascimento" class="b">Nascimento:</label><br>
-                <input name="nascimento" class="A" type="date" required><br>
-
-                <label for="mae" class="b">Nome da mãe:</label><br>
-                <input name="mae" class="A" type="text" placeholder="Informe o Nome"><br>
-
-                <label for="telefone" class="b">Telefone:</label><br>
-                <input name="telefone" class="A" type="text" placeholder="(99) 99999-9999"><br>
-
-                <label for="email" class="b">E-mail:</label><br>
-                <input name="email" class="A" type="email" placeholder="email@example.com" required><br>
-
-                <label for="foto" class="b">Foto:</label><br>
-                <input name="foto" class="A" type="file"><br>
-
-                <h3>Outros</h3>
-                <label class="b" for="escola">Formação Escolar:</label><br>
-                <select name="escola" class="A">
-                    <option value="Ensino Fundamental">Ensino Fundamental</option>
-                    <option value="Ensino Médio">Ensino Médio</option>
-                    <option value="Ensino Superior">Ensino Superior</option>
-                    <option value="Pós-graduação">Pós-graduação</option>
-                </select><br>
-
-                <label class="b" for="turno">Turno:</label><br>
-                <select name="turno" class="A">
-                    <option value="Matutino">Matutino</option>
-                    <option value="Integral">Integral</option>
-                    <option value="Noturno">Noturno</option>
-                    <option value="Vespertino">Vespertino</option>
-                </select><br>
-
-                <label class="b">Observações:</label><br>
-                <textarea name="observacoes" rows="4" class="A" placeholder="Digite aqui"></textarea><br>
-
-                <button type="reset">Limpar</button>
-                <button type="submit">Gravar</button>
-            </form>
+            <div class="container mt-5">
+                <h1>Cadastro de Cliente</h1>
+                <form action="/cadastrarCliente" method="POST">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome Completo</label>
+                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Informe seu nome completo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="cpf" class="form-label">CPF</label>
+                        <input type="text" class="form-control" id="cpf" name="cpf" placeholder="000.000.000-00">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nascimento" class="form-label">Data de Nascimento</label>
+                        <input type="date" class="form-control" id="nascimento" name="nascimento">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="exemplo@dominio.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefone" class="form-label">Telefone</label>
+                        <input type="text" class="form-control" id="telefone" name="telefone" placeholder="(99) 99999-9999">
+                    </div>
+                    <div class="mb-3">
+                        <label for="endereco" class="form-label">Endereço Completo</label>
+                        <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Rua, Número, Bairro, Cidade">
+                    </div>
+                    <div class="mb-3">
+                        <label for="genero" class="form-label">Gênero</label>
+                        <select class="form-select" id="genero" name="genero">
+                            <option>Masculino</option>
+                            <option>Feminino</option>
+                            <option>Outro</option>
+                            <option>Prefiro não informar</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="observacoes" class="form-label">Observações</label>
+                        <textarea class="form-control" id="observacoes" name="observacoes" rows="4" placeholder="Insira qualquer observação adicional aqui"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         </body>
         </html>
     `);
-});
+}
 
-// Rota para processar o formulário
-app.post('/submit', (req, res) => {
-    const formData = req.body;
-    console.log('Dados recebidos do formulário:', formData);
+function menuCliente(req,resp){
+    resp.send(`
+        <!DOCTYPE html>
+        <html lang="pt-br">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Cadastro de Cliente</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        </head>
+        <body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Menu Principal</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Alternar navegação">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/cadastrarCliente">Cadastro de Clientes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Sobre</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Serviços
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Consultoria</a></li>
+            <li><a class="dropdown-item" href="#">Treinamentos</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Outros Serviços</a></li>
+          </ul>
+        </li>
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Pesquisar" aria-label="Pesquisar">
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+      </form>
+    </div>
+  </div>
+</nav>
+</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</html> `
+    )
+}
 
-    res.send('<h1>Formulário enviado com sucesso!</h1><p>Dados recebidos no servidor.</p>');
-});
+function cadastrarCliente(req,resp){
+    const nome = req.body.nome;
+    const cpf = req.body.cpf;
+    const email = req.body.email;
+    const telefone = req.body.telefone;
+    const endereco = req.body.endereco;
+    const genero = req.body.genero;
+    const observacoes = req.body.observacoes;
 
-// Iniciar o servidor
-app.listen(porta, () => {
-    console.log(`Servidor rodando em http://localhost:3000`);
+    const cliente = { nome, cpf, email, telefone, endereco, genero, observacoes };
+    listaClientes.push(cliente);
+
+    listaClientes.push();
+   
+    resp.write(`   
+        <!DOCTYPE html>
+        <html lang="pt-br">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Lista de Cliente</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        </head>
+        <body>
+        <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">CPF</th>
+      <th scope="col">E-mail</th>
+      <th scope="col">Telefone</th>
+      <th scope="col">Endereço</th>
+      <th scope="col">Genero</th>
+      <th scope="col">Observações</th>
+    </tr>
+  </thead>
+  <tbody>`);
+
+  for (var i = 0; i < listaClientes.length; i++){
+    resp.write(`<tr>
+                <td>${listaClientes[i].nome}</td>
+                <td>${listaClientes[i].cpf}</td>
+                <td>${listaClientes[i].email}</td>
+                <td>${listaClientes[i].telefone}</td>
+                <td>${listaClientes[i].endereco}</td>
+                <td>${listaClientes[i].genero}</td>
+                <td>${listaClientes[i].observacoes}</td>
+                </tr>
+        `)
+  }
+
+  resp.write(`
+        </tbody>
+        </table>
+        <a class="btn btn-dark" href="/cadastrarCliente" role="button">Continuar cadastrando</a>
+        <a class="btn btn-dark" href="/" role="button">Voltar para o menu</a>
+        </body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        </html>
+  `);
+
+resp.end();
+
+}
+
+app.get('/',menuCliente);
+app.get('/cadastrarCliente', cadastrarClienteView);
+app.post('/cadastrarCliente',cadastrarCliente)
+
+app.listen(porta, host, () => {
+    console.log(`Servidor iniciado em execução no endereço http://localhost:${porta}`);
 });
