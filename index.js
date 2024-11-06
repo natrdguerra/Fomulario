@@ -121,13 +121,14 @@ function menuCliente(req,resp){
 function cadastrarCliente(req,resp){
     const nome = req.body.nome;
     const cpf = req.body.cpf;
+    const nascimento = req.body.nascimento;
     const email = req.body.email;
     const telefone = req.body.telefone;
     const endereco = req.body.endereco;
     const genero = req.body.genero;
     const observacoes = req.body.observacoes;
 
-    const cliente = { nome, cpf, email, telefone, endereco, genero, observacoes };
+    const cliente = { nome, cpf, nascimento, email, telefone, endereco, genero, observacoes };
     listaClientes.push(cliente);
 
     listaClientes.push();
@@ -147,6 +148,7 @@ function cadastrarCliente(req,resp){
     <tr>
       <th scope="col">Nome</th>
       <th scope="col">CPF</th>
+      <th scope="col">Nascimento</th>
       <th scope="col">E-mail</th>
       <th scope="col">Telefone</th>
       <th scope="col">Endereço</th>
@@ -160,6 +162,7 @@ function cadastrarCliente(req,resp){
     resp.write(`<tr>
                 <td>${listaClientes[i].nome}</td>
                 <td>${listaClientes[i].cpf}</td>
+                <td>${listaClientes[i].nascimento}</td>
                 <td>${listaClientes[i].email}</td>
                 <td>${listaClientes[i].telefone}</td>
                 <td>${listaClientes[i].endereco}</td>
