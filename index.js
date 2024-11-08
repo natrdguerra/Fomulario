@@ -130,8 +130,6 @@ function cadastrarCliente(req,resp){
 
     const cliente = { nome, cpf, nascimento, email, telefone, endereco, genero, observacoes };
     listaClientes.push(cliente);
-
-    listaClientes.push();
    
     resp.write(`   
         <!DOCTYPE html>
